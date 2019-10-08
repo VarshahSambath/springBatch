@@ -31,8 +31,7 @@ public class BatchConfiguration {
     @Autowired
     public StepBuilderFactory stepBuilderFactory;
 
-    @Value("testing/")
-    private Resource directory;
+    private final String filePath="src/main/resources/testing/sample-data.csv";
     
     @Bean
     public FlatFileItemReader<Person> reader() {
@@ -89,7 +88,7 @@ public class BatchConfiguration {
     @Bean
     public FileDeletingTasklet fileDeletingTasklet() {
       FileDeletingTasklet tasklet = new FileDeletingTasklet();
-      tasklet.setDirectory(directory);
+      tasklet.setFilePath(filePath);
       return tasklet;
     }
 

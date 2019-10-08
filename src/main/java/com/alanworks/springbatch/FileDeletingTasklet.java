@@ -12,42 +12,35 @@ import org.springframework.util.Assert;
 
 public class FileDeletingTasklet implements Tasklet, InitializingBean {
 
-  private Resource directory;
+//  private Resource directory;
+  
+  private  String filePath;
 
   @Override
   public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext)
       throws Exception {
-    File dir = directory.getFile();
-    Assert.state(dir.isDirectory());
-    System.out.println(">>>>>>>>>>"+directory.getFilename()+"**"+dir.isDirectory());
-
-    File[] files = dir.listFiles();
-    System.out.println(files.length);
-    for (int i = 0; i < files.length; i++) {
-    	System.out.println(files[i].getName());
-      boolean deleted = files[i].delete();
-      System.out.println("Deleted: "+deleted);
+    	File fileToDelete =new File(filePath);
+    	boolean deleted = fileToDelete.delete();
       if (!deleted) {
         throw new UnexpectedJobExecutionException(
-            "Could not delete file " + files[i].getPath());
+            "Could not delete file " + fileToDelete.getPath());
       } else {
-        System.out.println(files[i].getPath() + " is deleted!");
+        System.out.println(fileToDelete.getPath() + " is deleted!");
       }
-    }
     return RepeatStatus.FINISHED;
   }
 
-  @Override
-  public void afterPropertiesSet() throws Exception {
-	  System.out.println(directory.getDescription());
-    Assert.notNull(directory, "directory must be set");
-  }
+	public String getFilePath() {
+		return filePath;
+	}
+	public void setFilePath(String filePath){
+		this.filePath=filePath;
+	}
 
-  public Resource getDirectory() {
-    return directory;
-  }
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		Assert.notNull(filePath, "filePath must be set");
+	}
 
-  public void setDirectory(Resource directory) {
-    this.directory = directory;
-  }
+
 }
